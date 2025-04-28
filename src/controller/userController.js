@@ -1,11 +1,11 @@
-const User = require('../models/Users');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import User from '../model/userModel.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(username, password)
+        console.log(username, password);
 
         // Check if user already exists
         const existingUser = await User.findOne({ username });
@@ -25,7 +25,7 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
 

@@ -1,5 +1,6 @@
 import express from "express"
 import { fetch, fetchAll, create, update, remove } from "../controller/taskController.js"
+import authMiddleware from "../middleware/authMiddleware.js"
 
 const route = express.Router()
 /**
@@ -23,7 +24,7 @@ const route = express.Router()
  *       500:
  *         description: Internal Server error
  */
-route.get("/fetch/:title", fetch)
+route.get("/fetch/:title",authMiddleware, fetch)
 /**
  * @swagger
  * /api/tasks/fetchAll:
@@ -36,7 +37,7 @@ route.get("/fetch/:title", fetch)
  *       500:
  *         description: Internal Server error
  */
-route.get("/fetchAll", fetchAll)
+route.get("/fetchAll",authMiddleware, fetchAll)
 /**
  * @swagger
  * /api/tasks/create:
@@ -65,7 +66,7 @@ route.get("/fetchAll", fetchAll)
  *       500:
  *         description: Internal Server error
  */
-route.post("/create", create)
+route.post("/create",authMiddleware, create)
 /**
  * @swagger
  * /api/tasks/update/{title}:
@@ -98,7 +99,7 @@ route.post("/create", create)
  *       500:
  *         description: Internal Server error
  */
-route.put('/update/:title', update)
+route.put('/update/:title',authMiddleware, update)
 /**
  * @swagger
  * /api/tasks/remove/{title}:
@@ -120,6 +121,6 @@ route.put('/update/:title', update)
  *       500:
  *         description: Internal Server error
  */
-route.delete("/remove/:title", remove)
+route.delete("/remove/:title",authMiddleware, remove)
 
 export default route;
