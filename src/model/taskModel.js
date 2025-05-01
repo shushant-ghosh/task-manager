@@ -1,19 +1,19 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const listSchema = new mongoose.Schema({
-    title:{
+    title: {
         type: String,
         required: true
     },
-    description:{
+    description: {
         type: String,
         required: true
     },
-    status:{
+    status: {
         type: String,
-        enum: ['To Do','In Progress','Done'],
+        enum: ['To Do', 'In Progress', 'Done'],
         required: true
     },
-})
+});
 
-export default mongoose.model("list", listSchema)
+module.exports = mongoose.model("list", listSchema);

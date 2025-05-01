@@ -1,11 +1,11 @@
-import User from '../model/userModel.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+const User = require('../model/userModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(username, password);
+        // console.log(username, password);
 
         // Check if user already exists
         const existingUser = await User.findOne({ username });
@@ -25,7 +25,7 @@ export const registerUser = async (req, res) => {
     }
 };
 
-export const loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -35,10 +35,19 @@ export const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
 
         res.status(200).json({ token });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+module.exports = {
+    registerUser,
+    loginUser,
 };

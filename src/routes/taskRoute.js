@@ -1,8 +1,9 @@
-import express from "express"
-import { fetch, fetchAll, create, update, remove } from "../controller/taskController.js"
-import authMiddleware from "../middleware/authMiddleware.js"
+const express = require("express");
+const { fetch, fetchAll, create, update, remove } = require("../controller/taskController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-const route = express.Router()
+const route = express.Router();
+
 /**
  * @swagger
  * /api/tasks/fetch/{title}:
@@ -24,7 +25,8 @@ const route = express.Router()
  *       500:
  *         description: Internal Server error
  */
-route.get("/fetch/:title",authMiddleware, fetch)
+route.get("/fetch/:title", authMiddleware, fetch);
+
 /**
  * @swagger
  * /api/tasks/fetchAll:
@@ -37,7 +39,8 @@ route.get("/fetch/:title",authMiddleware, fetch)
  *       500:
  *         description: Internal Server error
  */
-route.get("/fetchAll",authMiddleware, fetchAll)
+route.get("/fetchAll", authMiddleware, fetchAll);
+
 /**
  * @swagger
  * /api/tasks/create:
@@ -66,7 +69,8 @@ route.get("/fetchAll",authMiddleware, fetchAll)
  *       500:
  *         description: Internal Server error
  */
-route.post("/create",authMiddleware, create)
+route.post("/create", authMiddleware, create);
+
 /**
  * @swagger
  * /api/tasks/update/{title}:
@@ -99,7 +103,8 @@ route.post("/create",authMiddleware, create)
  *       500:
  *         description: Internal Server error
  */
-route.put('/update/:title',authMiddleware, update)
+route.put("/update/:title", authMiddleware, update);
+
 /**
  * @swagger
  * /api/tasks/remove/{title}:
@@ -121,6 +126,6 @@ route.put('/update/:title',authMiddleware, update)
  *       500:
  *         description: Internal Server error
  */
-route.delete("/remove/:title",authMiddleware, remove)
+route.delete("/remove/:title", authMiddleware, remove);
 
-export default route;
+module.exports = route;
