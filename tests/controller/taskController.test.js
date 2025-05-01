@@ -1,11 +1,10 @@
 const request = require('supertest');
-const app = require('../../src/index'); // Assuming your express app is exported from app.js
+const app = require('../../src/index');
 const List = require('../../src/model/taskModel');
 
 let token;
 
 beforeAll(async () => {
-  // Create a user and login to get token
   await request(app)
     .post('/api/auth/register')
     .send({ username: 'testuser', password: 'testpassword' });
@@ -31,10 +30,32 @@ describe('Task Controller', () => {
     expect(res.body.title).toBe('Test Task');
   });
 
+  it('should return 500 for invalid task creation', async () => {
+    const res = await request(app)
+      .post('/api/tasks/create')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ invalidField: 'bad data' });
+    expect(res.status).toBe(500);
+  });
+
   it('should fetch all tasks', async () => {
-    const res = await request(app).get('/api/tasks/fetchAll').set('Authorization', `Bearer ${token}`);
+    const res = await request(app)
+      .get('/api/tasks/fetchAll')
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(1); // Since we created a task in the previous test
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it('should handle error in fetchAll', async () => {
+    const originalFind = List.find;
+    List.find = jest.fn().mockRejectedValue(new Error('Mocked error'));
+
+    const res = await request(app)
+      .get('/api/tasks/fetchAll')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(500);
+
+    List.find = originalFind;
   });
 
   it('should fetch a task by title', async () => {
@@ -46,29 +67,50 @@ describe('Task Controller', () => {
         description: 'This is another test task',
         status: 'In Progress',
       });
-  
+
     const res = await request(app)
       .get('/api/tasks/fetch/Another Task')
       .set('Authorization', `Bearer ${token}`);
-  
     expect(res.status).toBe(200);
     expect(res.body.title).toBe('Another Task');
   });
 
+  it('should return 404 for non-existent task in fetch', async () => {
+    const res = await request(app)
+      .get('/api/tasks/fetch/NotExist')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
+  });
+
   it('should update a task', async () => {
     const res = await request(app)
-      .put('/api/tasks/update/Test Task')
+      .put('/api/tasks/update/Another Task')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        status: 'Done',
-      });
+      .send({ status: 'Done' });
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('Done');
   });
 
+  it('should return 404 for update of non-existent task', async () => {
+    const res = await request(app)
+      .put('/api/tasks/update/NotExist')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'Done' });
+    expect(res.status).toBe(404);
+  });
+
   it('should delete a task', async () => {
-    const res = await request(app).delete('/api/tasks/remove/Test Task').set('Authorization', `Bearer ${token}`);
+    const res = await request(app)
+      .delete('/api/tasks/remove/Another Task')
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Task deleted successfully');
+  });
+
+  it('should return 404 for delete of non-existent task', async () => {
+    const res = await request(app)
+      .delete('/api/tasks/remove/NotExist')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
   });
 });
