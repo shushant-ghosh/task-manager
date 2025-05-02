@@ -8,7 +8,7 @@ dotenv.config();
 
 
 app.use(express.json());
-app.use(authMiddleware);  // Apply middleware
+app.use(authMiddleware);  
 
 app.get('/protected', (req, res) => res.status(200).send('Protected Route'));
 

@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../../src/index'); // Assuming your express app is exported from app.js
+const app = require('../../src/index'); 
 const User = require('../../src/model/userModel');
 
 describe('Registration', () => {

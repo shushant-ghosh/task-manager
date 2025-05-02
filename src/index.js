@@ -13,7 +13,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-// Swagger definition
+
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
